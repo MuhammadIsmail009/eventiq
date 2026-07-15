@@ -1,0 +1,11 @@
+timestamp,source_ip,destination_ip,destination_port,protocol,service,username,event_type,event_status,domain,command,bytes_sent,bytes_received,severity
+2026-07-14T10:00:00,198.51.100.200,8.8.8.8,53,UDP,DNS,workstation01,DNS_QUERY,SUCCESS,a9f82b6c7d8e1f2g3h4i5j6k7l8m9n0.data-transfer.example,,120,350,LOW
+2026-07-14T10:00:02,198.51.100.200,8.8.8.8,53,UDP,DNS,workstation01,DNS_QUERY,SUCCESS,b8d71e6f5g4h3i2j1k0l9m8n7o6p5q4.data-transfer.example,,115,330,LOW
+2026-07-14T10:00:04,198.51.100.200,8.8.8.8,53,UDP,DNS,workstation01,DNS_QUERY,SUCCESS,c8a7d6f5e4g3h2i1j0k9l8m7n6o5p4.data-transfer.example,,110,320,LOW
+2026-07-14T10:00:06,198.51.100.200,8.8.8.8,53,UDP,DNS,workstation01,DNS_QUERY,SUCCESS,d7a6b5c4d3e2f1g0h9i8j7k6l5m4n3.data-transfer.example,,130,360,LOW
+2026-07-14T10:00:08,198.51.100.200,8.8.8.8,53,UDP,DNS,workstation01,DNS_QUERY,SUCCESS,e6a5b4c3d2e1f0g9h8i7j6k5l4m3n2.data-transfer.example,,118,340,LOW
+2026-07-14T10:00:10,198.51.100.200,8.8.8.8,53,UDP,DNS,workstation01,DNS_QUERY,SUCCESS,f5a4b3c2d1e0f9g8h7i6j5k4l3m2n1.data-transfer.example,,125,345,LOW
+2026-07-14T10:00:12,198.51.100.200,8.8.8.8,53,UDP,DNS,workstation01,DNS_QUERY,SUCCESS,g4a3b2c1d0e9f8g7h6i5j4k3l2m1n0.data-transfer.example,,122,338,LOW
+2026-07-14T10:00:14,198.51.100.200,8.8.8.8,53,UDP,DNS,workstation01,DNS_QUERY,SUCCESS,h3a2b1c0d9e8f7g6h5i4j3k2l1m0n9.data-transfer.example,,119,330,LOW
+2026-07-14T10:00:16,198.51.100.200,8.8.8.8,53,UDP,DNS,workstation01,DNS_QUERY,SUCCESS,i2a1b0c9d8e7f6g5h4i3j2k1l0m9n8.data-transfer.example,,121,335,LOW
+2026-07-14T10:00:18,198.51.100.200,8.8.8.8,53,UDP,DNS,workstation01,DNS_QUERY,SUCCESS,j1a0b9c8d7e6f5g4h3i2j1k0l9m8n7.data-transfer.example,,117,332,LOW

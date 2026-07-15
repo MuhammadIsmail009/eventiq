@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EventIQ — {{ input.file }}</title>
+<style>
+  :root {
+    --bg-base:#0E1116; --s1:#161B22; --s2:#1C232D; --s3:#242C38;
+    --bd:#2A313C; --bd-strong:#3A424E;
+    --tx:#E8ECF1; --tx2:#98A2B0; --tx3:#818C9B; --data:#C6CDD6;
+    --accent:#78A9FF;
+    --crit:#FF6F4B; --high:#E69F00; --med:#F0E442; --low:#56B4E9;
+    --info:#818C9B; --ok:#42BE65;
+    --mono:"Cascadia Code","Cascadia Mono","SFMono-Regular",Consolas,"Liberation Mono",monospace;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body {
+    background:var(--bg-base); color:var(--tx); font-family:var(--sans);
+    font-size:13px; line-height:1.5; letter-spacing:.01em;
+    background-image:
+      radial-gradient(900px 380px at 12% -8%, rgba(120,169,255,.10), transparent 60%),
+      radial-gradient(700px 320px at 110% 0%, rgba(255,111,75,.05), transparent 55%);
+    background-attachment:fixed;
+  }
+  .wrap { max-width:1180px; margin:0 auto; padding:0 24px 80px; }
+  .mono { font-family:var(--mono); }
+  .num { font-variant-numeric:tabular-nums; }
+
+  header { position:sticky; top:0; z-index:20; backdrop-filter:blur(8px);
+    background:rgba(14,17,22,.82); border-bottom:1px solid var(--bd); }
+  .hbar { max-width:1180px; margin:0 auto; padding:14px 24px;
+    display:flex; align-items:baseline; justify-content:space-between; gap:16px; }
+  .brand { font-family:var(--mono); font-weight:700; font-size:15px;
+    letter-spacing:.34em; text-transform:uppercase; }
+  .brand b { color:var(--accent); }
+  .hmeta { font-family:var(--mono); font-size:11px; color:var(--tx3);
+    text-align:right; letter-spacing:.02em; }
+  .hmeta span { color:var(--tx2); }
+
+  section { margin-top:34px; }
+  .eyebrow { font-family:var(--mono); font-size:11px; text-transform:uppercase;
+    letter-spacing:.22em; color:var(--tx3); margin-bottom:6px;
+    display:flex; align-items:center; gap:10px; }
+  .eyebrow::after { content:""; flex:1; height:1px; background:var(--bd); }
+  .lede { color:var(--tx2); font-size:12.5px; margin-bottom:14px; max-width:760px; }
+
+  /* hero */
+  .hero { display:grid; grid-template-columns:1.6fr 1fr 1fr 1fr 1.2fr; gap:1px;
+    background:var(--bd); border:1px solid var(--bd); border-radius:12px;
+    overflow:hidden; margin-top:24px; }
+  .kpi { background:var(--s1); padding:18px 20px; }
+  .kpi .lab { font-family:var(--mono); font-size:10.5px; text-transform:uppercase;
+    letter-spacing:.16em; color:var(--tx3); }
+  .kpi .val { font-family:var(--mono); font-weight:700; font-size:26px;
+    line-height:1.05; margin-top:9px; letter-spacing:-.01em; }
+  .kpi.lead { background:linear-gradient(180deg, rgba(120,169,255,.08), transparent 70%), var(--s1); }
+  .kpi.lead .val { font-size:46px; text-shadow:0 0 34px rgba(120,169,255,.18); }
+  .kpi.flag .val { color:var(--high); }
+  .kpi .sub { font-family:var(--mono); font-size:11px; color:var(--tx2); margin-top:7px; }
+  .kpi.prio .val { font-size:15px; color:var(--crit); margin-top:11px; }
+  .trust { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+  .trust span { border:1px solid var(--bd); background:var(--s1); color:var(--tx2);
+    border-radius:999px; padding:5px 10px; font-family:var(--mono); font-size:10.5px; }
+  .trust b { color:var(--data); font-weight:600; }
+  .trust .warn { border-color:rgba(230,159,0,.55); }
+  .scope-note { margin-top:8px; color:var(--tx3); font-size:11px; }
+  .na-list { border-top:1px solid var(--bd); padding:12px 18px; color:var(--tx2); font-size:11.5px; }
+  .na-list b { color:var(--tx); font-family:var(--mono); }
+
+  /* severity chip */
+  .chip { display:inline-flex; align-items:center; gap:7px; font-family:var(--mono);
+    font-size:10.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+    padding:3px 9px 3px 8px; border-radius:999px; white-space:nowrap; }
+  .chip::before { font-size:9px; line-height:1; }
+  .chip[data-sev=CRITICAL]{ background:var(--crit); color:#1a0d08; }
+  .chip[data-sev=CRITICAL]::before{ content:"\25CF"; }
+  .chip[data-sev=HIGH]{ color:var(--high); border:1px solid var(--high); }
+  .chip[data-sev=HIGH]::before{ content:"\25C6"; }
+  .chip[data-sev=MEDIUM]{ color:var(--med); box-shadow:inset 0 -2px 0 var(--med); border-radius:3px; }
+  .chip[data-sev=MEDIUM]::before{ content:"\25B2"; }
+  .chip[data-sev=LOW]{ color:var(--low); }
+  .chip[data-sev=LOW]::before{ content:"\25A0"; }
+  .chip[data-sev=INFO]{ color:var(--info); }
+
+  .panel { border:1px solid var(--bd); border-radius:12px; background:var(--s1); padding:18px 20px; }
+  .panel h3 { font-family:var(--mono); font-size:11px; text-transform:uppercase;
+    letter-spacing:.16em; color:var(--tx2); font-weight:600; margin-bottom:6px; }
+  .panel .cap { font-size:11.5px; color:var(--tx3); margin-bottom:14px; }
+  .cols { display:grid; grid-template-columns:1.35fr 1fr; gap:20px; }
+
+  /* respond-first incidents */
+  details.inc { border:1px solid var(--bd); border-radius:10px; background:var(--s1);
+    margin-bottom:10px; overflow:hidden; }
+  details.inc[open] { border-color:var(--bd-strong); }
+  details.inc summary { list-style:none; cursor:pointer; padding:14px 18px;
+    display:grid; grid-template-columns:60px 96px 1fr 120px; gap:14px; align-items:center; }
+  details.inc summary::-webkit-details-marker { display:none; }
+  .pr { font-family:var(--mono); font-size:11px; color:var(--tx3); }
+  .pr b { display:block; color:var(--accent); font-size:16px; }
+  .cat { font-family:var(--mono); font-size:13px; color:var(--tx); font-weight:600; }
+  .narr { color:var(--tx2); font-size:12px; margin-top:3px; }
+  .risk { display:flex; align-items:center; gap:8px; justify-self:end; }
+  .risk .bar { width:56px; height:6px; border-radius:3px; background:var(--s3); overflow:hidden; }
+  .risk .bar i { display:block; height:100%; background:linear-gradient(90deg,var(--accent),var(--crit)); }
+  .risk .n { font-family:var(--mono); font-size:12px; color:var(--data); width:22px; }
+  .inc .body { padding:2px 18px 18px 18px; border-top:1px solid var(--bd);
+    display:grid; grid-template-columns:1fr 1fr; gap:12px 26px; }
+  .inc .body .kv { font-family:var(--mono); font-size:11.5px; }
+  .inc .body .kv .k { color:var(--tx3); } .inc .body .kv .v { color:var(--data); }
+  .inc .body .wide { grid-column:1/-1; }
+  .basis { grid-column:1/-1; font-size:12px; color:var(--tx2);
+    background:var(--s2); border-left:2px solid var(--accent); padding:8px 12px; border-radius:0 6px 6px 0; }
+  .basis b { color:var(--tx3); font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.1em; }
+  .ents { font-family:var(--mono); font-size:11px; color:var(--tx2); line-height:1.7; word-break:break-all; }
+  .ents span { background:var(--s2); border:1px solid var(--bd); border-radius:4px;
+    padding:1px 6px; margin:0 4px 4px 0; display:inline-block; color:var(--data); }
+
+  /* category table */
+  table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
+  table.tbl th { font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--tx3); text-align:left; padding:8px 12px; border-bottom:1px solid var(--bd); }
+  table.tbl td { padding:10px 12px; border-bottom:1px solid var(--bd); vertical-align:middle; }
+  table.tbl tr:last-child td { border-bottom:none; }
+  table.tbl .cnt { font-family:var(--mono); text-align:right; color:var(--tx); position:relative; }
+  table.tbl .cat-n { font-weight:600; color:var(--tx); }
+  table.tbl .why { color:var(--tx2); font-size:11.5px; }
+  table.tbl .mi { font-family:var(--mono); font-size:11px; color:var(--accent); }
+
+  /* overview: metrics + mixes + talkers */
+  .metrics { display:grid; grid-template-columns:repeat(6,1fr); gap:1px;
+    background:var(--bd); border:1px solid var(--bd); border-radius:10px; overflow:hidden; margin-bottom:20px; }
+  .metric { background:var(--s1); padding:14px 16px; }
+  .metric .m-l { font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:.12em; color:var(--tx3); }
+  .metric .m-v { font-family:var(--mono); font-size:20px; font-weight:700; margin-top:6px; }
+  .mix .row { display:grid; grid-template-columns:88px 1fr 66px; gap:10px; align-items:center; margin-bottom:8px;
+    font-family:var(--mono); font-size:11.5px; }
+  .mix .row .k { color:var(--tx2); } .mix .row .c { text-align:right; color:var(--data); }
+  .mix .track { height:8px; background:var(--s3); border-radius:4px; overflow:hidden; }
+  .mix .track i { display:block; height:100%; border-radius:4px; }
+  .talk .row { display:grid; grid-template-columns:1fr 62px; gap:8px; align-items:center;
+    font-family:var(--mono); font-size:11.5px; padding:5px 0; position:relative; }
+  .talk .row .b { position:absolute; left:0; top:2px; bottom:2px; background:var(--accent); opacity:.12; border-radius:3px; }
+  .talk .row .k { color:var(--data); z-index:1; word-break:break-all; }
+  .talk .row .c { text-align:right; color:var(--tx2); z-index:1; }
+  svg.chart, svg.vol { width:100%; height:auto; display:block; }
+  .vol .area { fill:rgba(120,169,255,.14); } .vol .line { fill:none; stroke:var(--accent); stroke-width:1.5; }
+  .axis { fill:var(--tx3); font-family:var(--mono); font-size:10px; }
+
+  /* validation proof */
+  .proof { border:1px solid var(--bd); border-radius:12px; background:var(--s1); overflow:hidden; }
+  .proof .top { display:flex; flex-wrap:wrap; align-items:center; gap:26px; padding:18px 22px;
+    border-bottom:1px solid var(--bd); background:linear-gradient(180deg, rgba(66,190,101,.06), transparent); }
+  .proof .big { font-family:var(--mono); font-weight:700; font-size:38px; color:var(--ok); letter-spacing:-.02em; }
+  .proof .big small { display:block; font-size:10px; font-weight:600; color:var(--tx3); letter-spacing:.16em; text-transform:uppercase; }
+  .proof .note { font-size:12px; color:var(--tx2); max-width:520px; }
+  table.prf { width:100%; border-collapse:collapse; font-family:var(--mono); font-size:12px; }
+  table.prf th, table.prf td { text-align:right; padding:8px 14px; border-bottom:1px solid var(--bd); }
+  table.prf th { color:var(--tx3); font-weight:600; font-size:10px; text-transform:uppercase; letter-spacing:.1em; }
+  table.prf td:first-child, table.prf th:first-child { text-align:left; color:var(--data); }
+  table.prf tr:last-child td { border-bottom:none; }
+  table.prf tr.tot td { color:var(--tx); font-weight:700; border-top:1px solid var(--bd-strong); background:var(--s2); }
+  .perfect { color:var(--ok); }
+
+  .mitre-t { padding:9px 0; border-bottom:1px solid var(--bd); }
+  .mitre-t:last-child { border-bottom:none; }
+  .mitre-t .t { font-family:var(--mono); font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--tx3); margin-bottom:6px; }
+  .tech { display:inline-flex; gap:6px; font-family:var(--mono); font-size:11px; color:var(--data);
+    background:var(--s2); border:1px solid var(--bd); padding:2px 8px; border-radius:5px; margin:0 6px 6px 0; }
+  .tech b { color:var(--accent); }
+
+  .traps { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .trap { border:1px dashed var(--bd-strong); border-radius:10px; padding:16px 18px; }
+  .trap .h { font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--tx2); margin-bottom:8px; } .trap .h::before { content:"\2298  "; color:var(--tx3); }
+  .trap p { color:var(--tx2); font-size:12px; margin-bottom:6px; } .trap .n { font-family:var(--mono); font-size:11px; color:var(--tx3); }
+
+  footer { margin-top:44px; padding-top:18px; border-top:1px solid var(--bd);
+    font-family:var(--mono); font-size:11px; color:var(--tx3); display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; }
+
+  @media (max-width:860px){ .hero{grid-template-columns:1fr 1fr} .cols,.traps{grid-template-columns:1fr}
+    .metrics{grid-template-columns:repeat(3,1fr)} details.inc summary{grid-template-columns:44px 1fr} .risk{display:none} .inc .body{grid-template-columns:1fr} }
+  @media (prefers-reduced-motion:no-preference){ section,.hero{animation:rise .14s ease-out both}
+    @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}} }
+</style>
+</head>
+<body>
+<header>
+  <div class="hbar">
+    <div class="brand">EVENT<b>IQ</b></div>
+    <div class="hmeta">
+      <span>{{ input.file }}</span> · {{ input.span_start }} → {{ input.span_end }}<br>
+      analysed {{ report.generated_at }} · {{ input.malformed }} malformed rows
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="hero">
+    <div class="kpi lead">
+      <div class="lab">Events evaluated</div>
+      <div class="val num">{{ overview.total_events | comma }}</div>
+      <div class="sub">single streaming pass</div>
+    </div>
+    <div class="kpi flag">
+      <div class="lab">Unique matched</div>
+      <div class="val num">{{ overview.flagged_events | comma }}</div>
+      <div class="sub">{{ overview.flagged_pct }}% of all traffic</div>
+    </div>
+    <div class="kpi">
+      <div class="lab">Not flagged</div>
+      <div class="val num">{{ overview.benign_events | comma }}</div>
+      <div class="sub">no current rule fired; not proof of benign</div>
+    </div>
+    <div class="kpi">
+      <div class="lab">Alerts</div>
+      <div class="val num">{{ summary.alert_count | comma }}</div>
+      <div class="sub">{{ summary.incident_count }} incidents · {{ categories | length }} matched rules</div>
+    </div>
+    {% if incidents %}
+    <div class="kpi prio">
+      <div class="lab">Respond first</div>
+      <div class="val">{{ incidents[0].id }} · {{ incidents[0].category }}</div>
+      <div class="sub">{{ incidents[0].primary_entity }}</div>
+    </div>
+    {% endif %}
+  </div>
+
+  {% if validation %}
+    {% set label_audit = validation.get('label_audit', {}) %}
+    {% set label_quality = label_audit.get('quality', 'available') %}
+    {% set scored_rules = label_audit.get('scored_rules', validation.get('per_rule', {}) | length) %}
+  {% else %}
+    {% set label_quality = 'absent' %}
+    {% set scored_rules = 0 %}
+  {% endif %}
+  <div class="trust" aria-label="Analysis trust and coverage">
+    <span class="{{ 'warn' if input.schema == 'partial' }}">Schema <b>{{ input.schema | default('complete', true) }}</b></span>
+    <span>Labels <b>{{ label_quality }}</b></span>
+    <span>Scored rules <b>{{ scored_rules }}</b></span>
+    <span>Coverage <b>{{ coverage.rules_enabled | default(0) }} enabled rules</b></span>
+    {% if input.missing_optional %}<span class="warn">Missing optional <b>{{ input.missing_optional | join(', ') }}</b></span>{% endif %}
+  </div>
+  <div class="scope-note">Coverage: {{ coverage.scope | default('configured behavioral rules', true) }}.
+    “No rule match” means no enabled rule fired; it is not proof that an event is benign.</div>
+
+  {% if incidents %}
+  <section>
+    <div class="eyebrow">Respond in this order</div>
+    <div class="lede">Incidents ranked by risk. Risk combines severity, the scale of the
+      activity, and how many entities it touched. Open one to see the evidence it fired on.</div>
+    {% for inc in incidents %}
+    <details class="inc" {{ 'open' if loop.first }}>
+      <summary>
+        <span class="pr">PRI<b>{{ loop.index }}</b></span>
+        <span class="chip" data-sev="{{ inc.severity }}">{{ inc.severity }}</span>
+        <span>
+          <span class="cat">{{ inc.category }}</span>
+          <div class="narr">{{ inc.narrative }}</div>
+        </span>
+        <span class="risk"><span class="bar"><i style="width:{{ inc.risk_score }}%"></i></span><span class="n num">{{ inc.risk_score }}</span></span>
+      </summary>
+      <div class="body">
+        <div class="basis"><b>Flagged because</b><br>{{ inc.basis }}</div>
+        <div class="kv"><span class="k">primary entity</span><br><span class="v">{{ inc.primary_entity }}</span></div>
+        <div class="kv"><span class="k">MITRE</span><br><span class="v">{{ inc.techniques | join(', ') }}</span></div>
+        <div class="kv"><span class="k">events</span><br><span class="v num">{{ inc.event_count | comma }}</span></div>
+        <div class="kv"><span class="k">affected entities</span><br><span class="v num">{{ inc.affected_count | comma }}</span></div>
+        <div class="kv"><span class="k">first seen</span><br><span class="v">{{ inc.first_seen }}</span></div>
+        <div class="kv"><span class="k">last seen</span><br><span class="v">{{ inc.last_seen }}</span></div>
+        {% if inc.affected_entities %}
+        <div class="wide"><div class="kv"><span class="k">affected (showing {{ inc.affected_entities|length }} of {{ inc.affected_count | comma }})</span></div>
+          <div class="ents">{% for e in inc.affected_entities %}<span>{{ e }}</span>{% endfor %}</div></div>
+        {% endif %}
+      </div>
+    </details>
+    {% endfor %}
+  </section>
+  {% endif %}
+
+  <section>
+    <div class="eyebrow">Suspicious traffic by category</div>
+    <div class="lede">Every category the engine flagged, how many events, and the basis it used.
+      Detection reads raw fields only; it never reads the file's own labels. Category counts can
+      overlap when one event matches more than one rule.</div>
+    <div class="panel">
+      <table class="tbl">
+        <thead><tr><th>Category</th><th>Basis</th><th>MITRE</th><th style="text-align:right">Severity</th><th style="text-align:right">Events</th></tr></thead>
+        <tbody>
+        {% set maxev = categories[0].events if categories else 1 %}
+        {% for c in categories %}
+          <tr>
+            <td class="cat-n">{{ c.category }}</td>
+            <td class="why">{{ c.basis }}</td>
+            <td class="mi">{{ c.mitre | join(' ') }}</td>
+            <td style="text-align:right"><span class="chip" data-sev="{{ c.severity }}">{{ c.severity }}</span></td>
+            <td class="cnt num">{{ c.events | comma }}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">The file at a glance</div>
+    <div class="lede">What the {{ overview.total_events | comma }} rows contain, straight from the raw
+      fields. This is the context an analyst reads before the findings.</div>
+    <div class="metrics">
+      <div class="metric"><div class="m-l">Events</div><div class="m-v num">{{ overview.total_events | comma }}</div></div>
+      <div class="metric"><div class="m-l">Source IPs</div><div class="m-v num">{{ overview.distinct.source_ips | comma }}</div></div>
+      <div class="metric"><div class="m-l">Dest IPs</div><div class="m-v num">{{ overview.distinct.destination_ips | comma }}</div></div>
+      <div class="metric"><div class="m-l">Users</div><div class="m-v num">{{ overview.distinct.usernames | comma }}</div></div>
+      <div class="metric"><div class="m-l">Domains</div><div class="m-v num">{{ overview.distinct.domains | comma }}</div></div>
+      <div class="metric"><div class="m-l">Services</div><div class="m-v num">{{ overview.distinct.services | comma }}</div></div>
+    </div>
+
+    <div class="cols">
+      <div class="panel">
+        <h3>Traffic volume over time</h3>
+        <div class="cap">All events per day across the {{ overview.daily_volume | length }}-day span.</div>
+        {% if volume.line %}
+        <svg class="vol" viewBox="0 0 {{ volume.width }} {{ volume.height + 18 }}" preserveAspectRatio="none" role="img" aria-label="Events per day">
+          <path class="area" d="{{ volume.area }}"></path>
+          <polyline class="line" points="{{ volume.line }}"></polyline>
+          <text class="axis" x="0" y="{{ volume.height + 14 }}">{{ volume.first }}</text>
+          <text class="axis" x="{{ volume.width }}" y="{{ volume.height + 14 }}" text-anchor="end">{{ volume.last }}</text>
+        </svg>
+        <div class="cap num">~{{ volume.avg | comma }} events/day average</div>
+        {% endif %}
+      </div>
+      <div class="panel">
+        <h3>Protocol &amp; status mix</h3>
+        <div class="cap">The shape of the raw traffic.</div>
+        <div class="mix">
+          {% for k, n in overview.protocol.items() %}
+          <div class="row"><span class="k">{{ k }}</span><span class="track"><i style="width:{{ (100*n/overview.total_events)|round(1) }}%;background:var(--accent)"></i></span><span class="c num">{{ (100*n/overview.total_events)|round(1) }}%</span></div>
+          {% endfor %}
+        </div>
+        <div style="height:10px"></div>
+        <div class="mix">
+          {% for k, n in overview.status.items() %}
+          <div class="row"><span class="k">{{ k }}</span><span class="track"><i style="width:{{ (100*n/overview.total_events)|round(1) }}%;background:{{ '#FF6F4B' if k=='BLOCKED' else ('#E69F00' if k=='FAILED' else '#42BE65') }}"></i></span><span class="c num">{{ n | comma }}</span></div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div style="height:20px"></div>
+    <div class="cols">
+      <div class="panel">
+        <h3>Busiest destinations</h3>
+        <div class="cap">Hosts receiving the most traffic. Volume alone does not imply malicious activity.</div>
+        <div class="talk">
+          {% set dmax = overview.top_destination_ips[0][1] if overview.top_destination_ips else 1 %}
+          {% for ip, n in overview.top_destination_ips %}
+          <div class="row"><span class="b" style="width:{{ (100*n/dmax)|round(1) }}%"></span><span class="k">{{ ip }}</span><span class="c num">{{ n | comma }}</span></div>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Top services</h3>
+        <div class="cap">The activity mix by service.</div>
+        <div class="talk">
+          {% set smax = overview.top_services[0][1] if overview.top_services else 1 %}
+          {% for s, n in overview.top_services %}
+          <div class="row"><span class="b" style="width:{{ (100*n/smax)|round(1) }}%"></span><span class="k">{{ s }}</span><span class="c num">{{ n | comma }}</span></div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {% if validation and validation.overall %}
+  <section>
+    <div class="eyebrow">Is it right? Scored against held-out labels</div>
+    <div class="lede">The file ships with an answer key (its own <span class="mono">event_type</span> column).
+      The engine never reads it during detection; it is used only here, to measure accuracy after the fact.
+      Give this tool a labelled file and it grades itself the same way.</div>
+    <div class="proof">
+      <div class="top">
+        <div class="big">{{ "%.3f"|format(validation.overall.f1) }}<small>Overall F1</small></div>
+        <div class="big">{{ "%.3f"|format(validation.overall.precision) }}<small>Precision</small></div>
+        <div class="big">{{ "%.3f"|format(validation.overall.recall) }}<small>Recall</small></div>
+        {% if validation.naive_failed_login_baseline.precision is not none %}
+        <div class="note">A naive “alert on any failed login” rule scores
+          <b class="mono">{{ "%.3f"|format(validation.naive_failed_login_baseline.precision) }}</b>
+          precision on this file. Separating a campaign from look-alike background is the work.</div>
+        {% else %}<div class="note">Metrics include only rules whose campaign label is present in this file.</div>{% endif %}
+      </div>
+      <table class="prf">
+        <thead><tr><th>Rule</th><th>Precision</th><th>Recall</th><th>F1</th><th>TP</th><th>FP</th><th>FN</th></tr></thead>
+        <tbody>
+        {% for name, r in validation.per_rule.items() %}
+          <tr><td>{{ name }}</td>
+            <td class="{{ 'perfect' if r.precision==1.0 }} num">{{ "%.3f"|format(r.precision) }}</td>
+            <td class="{{ 'perfect' if r.recall==1.0 }} num">{{ "%.3f"|format(r.recall) }}</td>
+            <td class="num">{{ "%.3f"|format(r.f1) }}</td>
+            <td class="num">{{ r.tp | comma }}</td><td class="num">{{ r.fp | comma }}</td><td class="num">{{ r.fn | comma }}</td></tr>
+        {% endfor %}
+          <tr class="tot"><td>OVERALL</td>
+            <td class="num">{{ "%.3f"|format(validation.overall.precision) }}</td>
+            <td class="num">{{ "%.3f"|format(validation.overall.recall) }}</td>
+            <td class="num">{{ "%.3f"|format(validation.overall.f1) }}</td>
+            <td class="num">{{ validation.overall.tp | comma }}</td><td class="num">{{ validation.overall.fp | comma }}</td><td class="num">{{ validation.overall.fn | comma }}</td></tr>
+        </tbody>
+      </table>
+      {% if validation.unscored %}<div class="na-list"><b>Not scored in this file</b><br>
+        {% for item in validation.unscored %}Rule {{ item.rule_id }}: {{ item.note }}{% if not loop.last %}<br>{% endif %}{% endfor %}
+      </div>{% endif %}
+    </div>
+  </section>
+  {% else %}
+  <section>
+    <div class="eyebrow">Accuracy check unavailable</div>
+    <div class="lede">{% if validation %}This file has labels, but none map to a supported campaign answer key.
+      {% else %}This file has no held-out <span class="mono">event_type</span> answer key.{% endif %}
+      Detection and the dashboard still ran from raw fields, but precision, recall and F1 cannot be measured honestly.</div>
+  </section>
+  {% endif %}
+
+  {% if not_detected %}
+  <section>
+    <div class="eyebrow">Not detected — and why</div>
+    <div class="lede">Two detections look obvious and are traps on this data. Naming them with the numbers beats shipping false positives.</div>
+    <div class="traps">
+      {% for nd in not_detected %}
+      <div class="trap"><div class="h">{{ nd.name | replace('_',' ') }}</div><p>{{ nd.reason }}</p><div class="n">{{ nd.numbers }}</div></div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  <footer>
+    <span>EventIQ · deterministic detection from raw fields · event_type held out for scoring</span>
+    <span class="num">{{ overview.total_events | comma }} rows · {{ overview.flagged_events | comma }} flagged</span>
+  </footer>
+</div>
+
+<script type="application/json" id="eventiq-report">{{ json_island | safe }}</script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+# Never commit the raw log. It is 132 MB and it is input data, not source.
+# Small labelled samples live in tests/data/ and review-logs/ instead.
+*.csv
+!tests/data/*.csv
+!review-logs/*.csv
+
+# Generated analysis output (regenerate with `eventiq analyze`)
+out/
+report.json
+dashboard.html
+alerts.jsonl
+*.jsonl
+eventiq_wazuh_rules.xml
+eventiq_sigma.yml
+*.report.json
+*.dashboard.html
+
+# Vendored reference repos are cloned, not committed
+vendor/*
+!vendor/README.md
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# Node, for the dashboard SPA in web/
+web/node_modules/
+web/.vite/
+web/tsconfig.tsbuildinfo
+# NOTE: the built bundle at src/eventiq/web/ is deliberately COMMITTED. That is
+# what lets `eventiq serve` run from a clean clone with no npm install. Do not
+# add it here.
+
+# Editor / OS
+.claude/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+.hypothesis/
+
+# Internal AI-pairing process record, not for the public repo:
+# the whole point of the writing-style rules is that the deliverables
+# don't read as AI-authored, so the record of how they were built stays local.
+CLAUDE.md
+AGENTS.md
+soc-project-1-prompt-pack.md
+docs/session-log.md
+docs/build-log/
+
+# Personal recording, far too large for git anyway
+Submission/
+
+# Reviewer's grading rubric, not ours to redistribute
+review-logs/*.docx

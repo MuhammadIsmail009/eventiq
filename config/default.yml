@@ -1,0 +1,125 @@
+# EventIQ default configuration.
+# Every threshold, indicator list and rule level lives here. No attack-specific
+# constant (a target IP, a subnet) appears in detection code; detectors key on
+# structure. Indicator lists below are threat intel, which is how a SOC feeds a
+# rule. Thresholds are calibrated to the observed benign ceiling (see comments)
+# and the sources cited in docs/RESEARCH.md.
+
+engine: stdlib
+
+# Destination-pivot on refused connection attempts. Benign busiest host: 758
+# sources but 0 refused and one service port. Campaign: 14,820 sources refused
+# across many ports. Tracking only refused traffic bounds memory to that host set.
+port_scan:
+  min_distinct_sources: 50
+  min_distinct_ports: 15
+  refused_statuses: [BLOCKED]
+  level: 12
+  mitre: [T1046]
+
+# Destination-pivot distributed brute force / spray. Benign max: 28 distinct
+# failing sources on one host; campaign: 15,926. Covers SSH (22) and RDP (3389).
+brute_force:
+  min_distinct_sources: 50
+  services: [ssh, rdp]
+  ports: [22, 3389]
+  level: 12
+  mitre: [T1110.003]
+
+# Classic single-source detectors (Phase 7). These use a sliding time window so
+# a lone attacker's short burst is visible, while staying silent on the diffuse
+# 1M benign floor and the distributed campaign (both spread over 35 days). Every
+# threshold sits above the measured windowed benign ceiling on the 1M file.
+
+# One source, many distinct ports on one host, any status. Benign windowed max: 2.
+classic_port_scan:
+  window_seconds: 300
+  min_ports: 10
+  level: 10
+  mitre: [T1046]
+
+# One source, repeated failed auth on one host. Benign windowed max: 1.
+# Threshold 8 separates a sustained single-source brute force from the
+# few-attempts-per-source pattern of a distributed spray, which 100120 handles.
+classic_brute_force:
+  window_seconds: 600
+  min_failures: 8
+  level: 10
+  mitre: [T1110.001]
+
+# Spray shape A: one source, many usernames in a window (benign windowed max: 1).
+# Spray shape B: many sources onto one account across the file, in the 7..49 band
+# below the distributed threshold (benign whole-file max: 6; the 15,926-source
+# campaign is above max_sources and left to rule 100100).
+password_spray:
+  window_seconds: 600
+  min_usernames: 5
+  min_sources: 7
+  max_sources: 50
+  level: 10
+  mitre: [T1110.003]
+
+# One source failing auth across many hosts on SMB/RDP/WinRM. Benign windowed max: 2.
+lateral_movement:
+  window_seconds: 600
+  min_hosts: 5
+  ports: [445, 3389, 5985, 5986]
+  level: 12
+  mitre: [T1021]
+
+# DNS tunneling: high entropy AND long labels AND many unique subdomains.
+dns_tunnel:
+  min_entropy: 3.0
+  min_label_len: 20
+  min_query_count: 5
+  allowlist: []
+  level: 12
+  mitre: [T1071.004]
+
+# Suspicious domains: exact IOC list (the six seen in this file) plus a
+# conservative bad-TLD net for generalisation.
+suspicious_domain:
+  iocs:
+    - powershell-download.site
+    - freevpn-access.click
+    - login-security-check.info
+    - remote-admin-panel.ru
+    - secure-update-check.xyz
+    - cdn-account-verify.top
+  bad_tlds: [click, site, top, info, xyz, ru]
+  level: 10
+  mitre: [T1071.004]
+
+powershell:
+  patterns:
+    - encodedcommand
+    - downloadstring
+    - windowstyle_hidden
+    - executionpolicy_bypass
+  level: 13
+  mitre: [T1059.001]
+
+# Curated native equivalents of current SigmaHQ process-creation rules. These
+# require the utility name and its download arguments in the command field.
+sigma_commands:
+  enabled_rules: [bitsadmin_download, certutil_download]
+  level: 10
+  mitre: [T1105]
+
+c2_port:
+  ioc_ports: [4444]
+  level: 12
+  mitre: [T1571]
+
+# Detections the data cannot support. Named honestly with the numbers, not built.
+not_detected:
+  - name: exfiltration_by_volume
+    reason: >-
+      bytes_sent/bytes_received are uniform random noise; median total is ~3.5 MB
+      for every event type including DNS queries. A volume rule is 100% false positive.
+    numbers: "median total bytes ~3.5 MB across all event types; PORT_SCAN is the only outlier at ~80 bytes"
+  - name: offhours_and_beaconing
+    reason: >-
+      timestamps are uniform at ~4% of events per hour, 24h/day, with no periodic
+      interval. There is no business-hours baseline and no beacon to recover.
+    numbers: "1/24 of events in every hour; no periodicity"

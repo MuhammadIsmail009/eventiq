@@ -1,0 +1,33 @@
+{
+  "name": "eventiq-web",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "EventIQ dashboard SPA. Built output is committed to src/eventiq/web so `eventiq serve` never needs Node at run time.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -b --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@fontsource-variable/big-shoulders-display": "^5.2.5",
+    "@fontsource/ibm-plex-mono": "^5.2.7",
+    "framer-motion": "^11.11.9",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/react": "^18.3.11",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^6.0.3",
+    "jsdom": "^29.1.1",
+    "typescript": "^5.6.3",
+    "vite": "^8.1.4",
+    "vitest": "^4.1.10"
+  }
+}
