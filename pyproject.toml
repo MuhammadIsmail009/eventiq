@@ -24,8 +24,8 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/OWNER/eventiq"
-Repository = "https://github.com/OWNER/eventiq"
+Homepage = "https://github.com/MuhammadIsmail009/eventiq"
+Repository = "https://github.com/MuhammadIsmail009/eventiq"
 
 [project.scripts]
 eventiq = "eventiq.cli:main"

@@ -6,7 +6,7 @@
 
 Reads a million rows of raw network, authentication, DNS and system activity, finds the attacks hiding in them, ranks them by risk, and proves its own accuracy against labels it was never allowed to see during detection.
 
-[![CI](https://github.com/OWNER/eventiq/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/eventiq/actions/workflows/ci.yml)
+[![CI](https://github.com/MuhammadIsmail009/eventiq/actions/workflows/ci.yml/badge.svg)](https://github.com/MuhammadIsmail009/eventiq/actions/workflows/ci.yml)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)](https://www.python.org/)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![Checked with mypy](https://www.mypy-lang.org/static/mypy_badge.svg)](https://mypy-lang.org/)
