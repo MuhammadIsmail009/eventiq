@@ -17,6 +17,10 @@ Reads a million rows of raw network, authentication, DNS and system activity, fi
 [Full report (PDF)](docs/report/eventiq-report.pdf) ·
 [Dashboard preview](#-the-dashboard)
 
+<br>
+
+<img src="https://readme-typing-svg.demolab.com/?font=Fira+Code&weight=500&size=18&pause=1200&color=39FF14&background=0D1117&center=true&vCenter=true&width=860&height=100&lines=Initializing+EventIQ+detection+engine...;Reading+network_security_logs_1_million.csv;1%2C000%2C000+rows+streamed+in+a+single+pass;Distributed+port+scan+found+-+14%2C814+sources%2C+one+target;Distributed+brute+force+found+-+15%2C926+sources%2C+one+target;Scoring+against+held+out+labels+never+seen+during+detection;Precision+1.000+Recall+1.000+F1+1.000+FP+0+FN+0" alt="Terminal animation: EventIQ analyzing the reference log file and scoring itself against held-out labels">
+
 </div>
 
 ---
